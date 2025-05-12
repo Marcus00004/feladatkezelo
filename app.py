@@ -1,10 +1,14 @@
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 app.secret_key = 'nagyontitkoskodj'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
+
+# PostgreSQL adatbázis URL a környezeti változóból
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # opcionális, de ajánlott
 db = SQLAlchemy(app)
 
 class User(db.Model):
