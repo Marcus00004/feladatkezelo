@@ -9,13 +9,13 @@
             font-family: sans-serif;
             background-color: #f7f9fc;
             margin: 0;
-            padding: 2rem;
+            padding: 1rem;
         }
         .container {
             max-width: 800px;
             margin: auto;
             background: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0,0,0,0.05);
         }
@@ -25,9 +25,11 @@
         }
         .top-bar {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
+            gap: 0.5rem;
         }
         .top-bar a {
             text-decoration: none;
@@ -35,6 +37,7 @@
             background-color: #007bff;
             padding: 0.5rem 1rem;
             border-radius: 5px;
+            display: inline-block;
         }
         .top-bar a:hover {
             background-color: #0056b3;
@@ -81,6 +84,21 @@
         .task-status {
             font-size: 0.9rem;
             color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            input[type="text"] {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            .task-list li {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
