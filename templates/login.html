@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Bejelentkezés</title>
+</head>
+<body>
+    <h2>Bejelentkezés</h2>
+    <form method="post">
+        Felhasználónév: <input type="text" name="username" required><br>
+        Jelszó: <input type="password" name="password" required><br>
+        <button type="submit">Belépés</button>
+    </form>
+    <p>Nincs még fiókod? <a href="{{ url_for('register') }}">Regisztrálj</a></p>
+</body>
+</html>

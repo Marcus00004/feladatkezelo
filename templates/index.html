@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Feladatkezelő</title>
+</head>
+<body>
+    <h2>Szia, {{ user.username }}!</h2>
+    <a href="{{ url_for('logout') }}">Kijelentkezés</a>
+
+    <h3>Feladataid</h3>
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task.title }} - Állapot: {{ task.status }}
+                <form method="post" action="{{ url_for('update', task_id=task.id) }}" style="display:inline;">
+                    <select name="status" onchange="this.form.submit()">
+                        <option {% if task.status == 'Új' %}selected{% endif %}>Új</option>
+                        <option {% if task.status == 'Folyamatban' %}selected{% endif %}>Folyamatban</option>
+                        <option {% if task.status == 'Kész' %}selected{% endif %}>Kész</option>
+                    </select>
+                </form>
+            </li>
+        {% else %}
+            <li>Nincs még feladatod.</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Új feladat</h3>
+    <form method="post" action="{{ url_for('add') }}">
+        Feladat címe: <input type="text" name="title" required>
+        <button type="submit">Hozzáadás</button>
+    </form>
+</body>
+</html>
