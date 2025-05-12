@@ -18,7 +18,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
-    role = db.Column(db.String(20), default='felhasználó')  # 'adminisztrátor', 'kezelő', 'felhasználó'
+    role = db.Column(db.String(20), default='felhasználó')
     active = db.Column(db.Boolean, default=True)
 
 class Task(db.Model):
@@ -28,7 +28,6 @@ class Task(db.Model):
     status = db.Column(db.String(50), default='Új')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-# --- Jogosultsági ellenőrző segédfüggvények ---
 def is_admin():
     return 'user_id' in session and get_current_user().role == 'adminisztrátor'
 
@@ -38,22 +37,18 @@ def is_manager():
 def get_current_user():
     return User.query.get(session['user_id']) if 'user_id' in session else None
 
-# --- Kezdőlap ---
 @app.route('/')
 def index():
     user = get_current_user()
     if not user or not user.active:
         session.pop('user_id', None)
         return redirect(url_for('login'))
-
     if user.role == 'adminisztrátor' or user.role == 'kezelő':
         tasks = Task.query.all()
     else:
         tasks = Task.query.filter_by(user_id=user.id).all()
-
     return render_template('index.html', user=user, tasks=tasks)
 
-# --- Regisztráció ---
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -69,7 +64,6 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html')
 
-# --- Bejelentkezés ---
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -80,13 +74,11 @@ def login():
         return 'Hibás belépési adatok vagy tiltott fiók.'
     return render_template('login.html')
 
-# --- Kijelentkezés ---
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
     return redirect(url_for('login'))
 
-# --- Új feladat ---
 @app.route('/add', methods=['POST'])
 def add():
     user = get_current_user()
@@ -97,7 +89,6 @@ def add():
         db.session.commit()
     return redirect(url_for('index'))
 
-# --- Feladat státusz frissítése ---
 @app.route('/update/<int:task_id>', methods=['POST'])
 def update(task_id):
     user = get_current_user()
@@ -108,7 +99,6 @@ def update(task_id):
             db.session.commit()
     return redirect(url_for('index'))
 
-# --- Felhasználók kezelése (admin nézet) ---
 @app.route('/admin/users')
 def manage_users():
     user = get_current_user()
@@ -140,8 +130,8 @@ def reset_password(user_id):
         db.session.commit()
     return redirect(url_for('manage_users'))
 
-# --- Indítás ---
 if __name__ == '__main__':
     with app.app_context():
+        db.drop_all()
         db.create_all()
     app.run(host='0.0.0.0', port=10000, debug=True)
