@@ -23,13 +23,21 @@
             text-align: center;
             color: #333;
         }
-        .logout {
-            text-align: right;
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 1rem;
         }
-        .logout a {
-            color: #dc3545;
+        .top-bar a {
             text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+        .top-bar a:hover {
+            background-color: #0056b3;
         }
         .task-list {
             list-style: none;
@@ -78,9 +86,16 @@
 </head>
 <body>
     <div class="container">
-        <h2>Szia, {{ user.username }}!</h2>
-        <div class="logout">
-            <a href="{{ url_for('logout') }}">Kijelentkezés</a>
+        <div class="top-bar">
+            <div>
+                <strong>Szia, {{ user.username }}!</strong>
+                {% if user.role == 'adminisztrátor' %}
+                | <a href="{{ url_for('manage_users') }}">Admin felület</a>
+                {% endif %}
+            </div>
+            <div>
+                <a href="{{ url_for('logout') }}">Kijelentkezés</a>
+            </div>
         </div>
 
         <h3>Feladataid</h3>
