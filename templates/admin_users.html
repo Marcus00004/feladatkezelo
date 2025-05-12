@@ -8,29 +8,46 @@
         body {
             font-family: sans-serif;
             background-color: #f7f9fc;
-            padding: 2rem;
+            padding: 1rem;
+            margin: 0;
         }
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: auto;
             background: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            overflow-x: auto;
         }
         h2 {
             text-align: center;
             color: #333;
         }
+        .back-link {
+            margin-bottom: 1rem;
+        }
+        .back-link a {
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .back-link a:hover {
+            background-color: #0056b3;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1rem;
+            min-width: 600px;
         }
         th, td {
             border: 1px solid #ccc;
-            padding: 0.75rem;
+            padding: 0.5rem;
             text-align: left;
+            vertical-align: middle;
         }
         th {
             background-color: #eee;
@@ -40,10 +57,10 @@
         }
         input[type="password"] {
             padding: 0.3rem;
-            width: 140px;
+            width: 100px;
         }
         button {
-            padding: 0.3rem 0.5rem;
+            padding: 0.3rem 0.6rem;
             background-color: #007bff;
             color: white;
             border: none;
@@ -54,17 +71,28 @@
         button:hover {
             background-color: #0056b3;
         }
-        .status {
-            font-size: 0.9rem;
-            color: #666;
-        }
         .inactive {
             color: red;
+        }
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                font-size: 14px;
+            }
+            input[type="password"] {
+                width: 90px;
+            }
+            button {
+                font-size: 13px;
+                padding: 0.3rem 0.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="back-link">
+            <a href="{{ url_for('index') }}">⬅ Vissza a főoldalra</a>
+        </div>
         <h2>Felhasználók kezelése ({{ current_user.username }})</h2>
         <table>
             <tr>
