@@ -3,17 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <title>Feladatkezelő</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f7f9fc;
+            margin: 0;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .logout {
+            text-align: right;
+            margin-bottom: 1rem;
+        }
+        .logout a {
+            color: #dc3545;
+            text-decoration: none;
+        }
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+        .task-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 0.5rem 0;
+        }
+        form.inline {
+            display: inline;
+        }
+        select {
+            padding: 0.3rem;
+            border-radius: 5px;
+        }
+        .add-form {
+            margin-top: 2rem;
+        }
+        input[type="text"] {
+            padding: 0.5rem;
+            width: 70%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .task-status {
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-    <h2>Szia, {{ user.username }}!</h2>
-    <a href="{{ url_for('logout') }}">Kijelentkezés</a>
+    <div class="container">
+        <h2>Szia, {{ user.username }}!</h2>
+        <div class="logout">
+            <a href="{{ url_for('logout') }}">Kijelentkezés</a>
+        </div>
 
-    <h3>Feladataid</h3>
-    <ul>
-        {% for task in tasks %}
+        <h3>Feladataid</h3>
+        <ul class="task-list">
+            {% for task in tasks %}
             <li>
-                {{ task.title }} - Állapot: {{ task.status }}
-                <form method="post" action="{{ url_for('update', task_id=task.id) }}" style="display:inline;">
+                <span>{{ task.title }} <span class="task-status">({{ task.status }})</span></span>
+                <form method="post" action="{{ url_for('update', task_id=task.id) }}" class="inline">
                     <select name="status" onchange="this.form.submit()">
                         <option {% if task.status == 'Új' %}selected{% endif %}>Új</option>
                         <option {% if task.status == 'Folyamatban' %}selected{% endif %}>Folyamatban</option>
@@ -21,15 +96,18 @@
                     </select>
                 </form>
             </li>
-        {% else %}
+            {% else %}
             <li>Nincs még feladatod.</li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </ul>
 
-    <h3>Új feladat</h3>
-    <form method="post" action="{{ url_for('add') }}">
-        Feladat címe: <input type="text" name="title" required>
-        <button type="submit">Hozzáadás</button>
-    </form>
+        <div class="add-form">
+            <h3>Új feladat</h3>
+            <form method="post" action="{{ url_for('add') }}">
+                <input type="text" name="title" placeholder="Feladat címe" required>
+                <button type="submit">Hozzáadás</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
