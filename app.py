@@ -75,4 +75,4 @@ def update(task_id):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host='192.168.0.43', port=5050, debug=True)
+    app.run(host='0.0.0.0', port=10000, debug=True)
