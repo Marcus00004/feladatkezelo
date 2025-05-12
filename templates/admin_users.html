@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Felhasználók kezelése</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f7f9fc;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background-color: #eee;
+        }
+        form.inline {
+            display: inline;
+        }
+        input[type="password"] {
+            padding: 0.3rem;
+            width: 140px;
+        }
+        button {
+            padding: 0.3rem 0.5rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .status {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .inactive {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Felhasználók kezelése ({{ current_user.username }})</h2>
+        <table>
+            <tr>
+                <th>Felhasználónév</th>
+                <th>Szerepkör</th>
+                <th>Állapot</th>
+                <th>Jelszó csere</th>
+                <th>Kitiltás / Visszaengedés</th>
+            </tr>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.role }}</td>
+                <td class="{{ 'inactive' if not user.active else '' }}">
+                    {{ 'Tiltva' if not user.active else 'Aktív' }}
+                </td>
+                <td>
+                    <form method="post" action="{{ url_for('reset_password', user_id=user.id) }}" class="inline">
+                        <input type="password" name="new_password" placeholder="Új jelszó" required>
+                        <button type="submit">Mentés</button>
+                    </form>
+                </td>
+                <td>
+                    {% if user.username != 'admin' %}
+                    <a href="{{ url_for('toggle_user', user_id=user.id) }}">
+                        {% if user.active %}Kitiltás{% else %}Visszaengedés{% endif %}
+                    </a>
+                    {% else %}
+                    <em>–</em>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
