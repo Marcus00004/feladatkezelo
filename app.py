@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -7,13 +8,11 @@ import os
 app = Flask(__name__)
 app.secret_key = 'nagyontitkoskodj'
 
-# PostgreSQL beállítás
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
-# --- Modellek ---
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
@@ -43,10 +42,12 @@ def index():
     if not user or not user.active:
         session.pop('user_id', None)
         return redirect(url_for('login'))
-    if user.role == 'adminisztrátor' or user.role == 'kezelő':
+
+    if user.role in ['adminisztrátor', 'kezelő']:
         tasks = Task.query.all()
     else:
         tasks = Task.query.filter_by(user_id=user.id).all()
+
     return render_template('index.html', user=user, tasks=tasks)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -130,8 +131,18 @@ def reset_password(user_id):
         db.session.commit()
     return redirect(url_for('manage_users'))
 
+@app.route('/admin/change_role/<int:user_id>', methods=['POST'])
+def change_role(user_id):
+    admin = get_current_user()
+    if not admin or admin.role != 'adminisztrátor':
+        return redirect(url_for('index'))
+    user = User.query.get(user_id)
+    if user and user.username != 'admin':
+        user.role = request.form['new_role']
+        db.session.commit()
+    return redirect(url_for('manage_users'))
+
 if __name__ == '__main__':
     with app.app_context():
-        db.drop_all()
         db.create_all()
     app.run(host='0.0.0.0', port=10000, debug=True)
